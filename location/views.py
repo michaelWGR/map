@@ -11,4 +11,11 @@ def index(request):
     }
     return render(request, 'location/index.html', context)
 
+def locate(request, address, city, key):
+    lo = get_location(address, city, key)
+    context = {
+        'location': lo,
+    }
+    return render(request, 'location/index.html', context)
+
 

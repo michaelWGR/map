@@ -6,6 +6,11 @@
 
         <!-- Main content -->
         <div class="col-md-8">
+            <form class="form-inline sidebar-search-form my-2 my-lg-0">
+                <input type="text" size="20">
+                <input type="text" size="20">
+                <button type="submit">查询</button>
+            </form>
             {% for k in key_list %}
                 <ul>
                     <li>{{ k.key }}</li>
@@ -14,7 +19,7 @@
             <article>
                 <h2 class="article-title">Introduction to overflow</h2>
 
-                <p class="article-meta">Posted on <time datetime="2017-05-14">14 May</time> by <a href="#" rel="author">Joe Bloggs</a></p>
+                <p class="article-meta"> Postedon <time datetime="2017-05-14">14 May</time> by <a href="#" rel="author">Joe Bloggs</a></p>
 
                 <p>Welcome to overflow, a free CSS3 &amp; HTML5 responsive web template from <a href="#" title="ZyPOP">ZyPOP</a>. This template is completely <strong>free</strong> to use permitting a link remains back to  <a href="#" title="ZyPOP">ZyPOP</a>.</p>
 
