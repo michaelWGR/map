@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div class="row">
+
+        <!-- Main content -->
+        <div class="col-md-8">
+            {% if transit_detail %}
+            <p>总平均费用: {{ transit_detail.total_per_cost }}元</p>
+            <p>总平均时间： {{ transit_detail.total_per_duration }}秒</p>
+            <p>总平均步行距离：{{ transit_detail.total_per_walking_distance }}米</p>
+            <p>总平均距离：{{ transit_detail.total_per_distance }}米</p>
+            <p>交通明细：</p>
+
+            {% endif %}
+
+
+        </div>
+    </div>
+
+{% endblock %}

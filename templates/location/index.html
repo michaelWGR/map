@@ -6,39 +6,62 @@
 
         <!-- Main content -->
         <div class="col-md-8">
-            <form class="form-inline sidebar-search-form my-2 my-lg-0">
-                <input type="text" size="20">
-                <input type="text" size="20">
-                <button type="submit">查询</button>
+            <form action="{% url 'location:locate' %}" method="get">
+                <div>
+                    <label>具体地点：</label>
+                    <input type="text" size="50" name="address" placeholder="请输入具体地点">
+                </div>
+                <div>
+                    <label>城市：</label>
+                    <select name="city">
+                        <option value="广州">广州</option>
+                    </select>
+                </div>
+                <div>
+                    <label>请求秘钥：</label>
+                    <select name="key">
+                        {% for k in key_list %}
+                            <option value="{{ k.key }}">{{ k.key }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <br>
+                <input type="submit" value="查询" class="btn btn-primary">
             </form>
-            {% for k in key_list %}
-                <ul>
-                    <li>{{ k.key }}</li>
-                </ul>
+
+
+            {% if location %}
+                <p>{{ location }}</p>
+            {% endif %}
+            {% for full_address in full_address_list %}
+                <p>{{ full_address }}</p>
             {% endfor %}
+
+            <form action="{% url 'location:transit' %}" method="post">
+                {% csrf_token %}
+                <div>
+                    <label>两个坐标点：</label>
+                    <input type="text" name="location1" placeholder="请输入坐标点">
+                    <input type="text" name="location2" placeholder="请输入坐标点">
+                </div>
+                <div>
+                    <label>请求秘钥：</label>
+                    <select name="key">
+                        {% for k in key_list %}
+                            <option value="{{ k.key }}">{{ k.key }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" value="search" class="btn btn-primary">
+            </form>
             <article>
-                <h2 class="article-title">Introduction to overflow</h2>
-
-                <p class="article-meta"> Postedon <time datetime="2017-05-14">14 May</time> by <a href="#" rel="author">Joe Bloggs</a></p>
-
-                <p>Welcome to overflow, a free CSS3 &amp; HTML5 responsive web template from <a href="#" title="ZyPOP">ZyPOP</a>. This template is completely <strong>free</strong> to use permitting a link remains back to  <a href="#" title="ZyPOP">ZyPOP</a>.</p>
-
-                <p> Should you wish to use this template unbranded you can buy a template license from our website for 8.00 GBP, this will allow you remove all branding related to our site, for more information about this see below.</p>
-
-                <p>This template has been tested in:</p>
-
                 <ul>
-                    <li>Firefox</li>
-                    <li>IE / Edge</li>
-                    <li>Chrome</li>
-                    <li>Safari</li>
-                    <li>iOS / Android</li>
+                    {% for t in traffic_info %}
+                    <li><a href="{% url 'location:detail' t.id %}">{{ t.id }}  {{ t.name }}  {{ t.location }}  {{ t.circle_id.id }}</a></li>
+                    {% endfor %}
                 </ul>
-
-                <a href="#" class="btn btn-primary">Read more</a>
-                <a href="#" class="btn btn-secondary">Comments</a>
-
             </article>
+
 
             <article>
 

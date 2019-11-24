@@ -15,18 +15,24 @@ def get_location(address, city, key=_KEY1):
     :param city: 指定查询的城市,指定城市的中文（如北京）、指定城市的中文全拼（beijing）、citycode（010）、adcode（110000）
     :return: 坐标，例如113.376984,23.125229
     '''
-    url = 'https://restapi.amap.com/v3/geocode/geo'
-    params = {
-        'key': key,
-        'address': address,
-        'city': city
-    }
+    try:
+        url = 'https://restapi.amap.com/v3/geocode/geo'
+        params = {
+            'key': key,
+            'address': address,
+            'city': city
+        }
 
-    rp = requests.get(url=url, params=params)
-    rp_dict = json.loads(rp.content)
-    location = rp_dict['geocodes'][0]['location']
+        rp = requests.get(url=url, params=params)
+        rp_dict = json.loads(rp.content)
+        location = rp_dict['geocodes'][0]['location']
 
-    return location
+        return location
+    except Exception as ex:
+        print(ex)
+
+    return
+
 
 def get_regeo(location, radius=10, roadlevel=0, extensions='all', key=_KEY1):
     '''
@@ -48,9 +54,11 @@ def get_regeo(location, radius=10, roadlevel=0, extensions='all', key=_KEY1):
 
     }
     rp = requests.get(url=url, params=params)
-    # print(rp.content.decode('utf-8'))
+    full_address_list = []
     for i in json.loads(rp.content)['regeocode']['pois']:
-        print(i)
+        full_address = i['address']+i['name']
+        full_address_list.append(full_address)
+    return full_address_list
 
 def get_around_place(location, radius, offset='20', keywords='地铁|公交', types='150500|150501|150700|150701|150702', extensions='all', key=_KEY1):
     '''
@@ -90,7 +98,7 @@ def get_around_place(location, radius, offset='20', keywords='地铁|公交', ty
                     traffic_info_dict['name'] = i['name']
                     traffic_info_dict['location'] = i['location']
                     traffic_list.append(traffic_info_dict)
-                    # print(i['name'])
+                    print(traffic_info_dict)
         else:
             break
     return traffic_list
@@ -113,7 +121,7 @@ def get_around_place(location, radius, offset='20', keywords='地铁|公交', ty
 #     dis=2*asin(sqrt(a))*EARTH_REDIUS*1000
 #     return dis
 
-def get_centre_point(location1, location2):
+def get_center_point(location1, location2):
     # 获取两点间的圆心,返回string(lng,lat)，例如113.357201,23.124350
     if location1 != '' and location2 != '':
         lng1 = float(location1.split(',')[0])
@@ -272,10 +280,10 @@ def aggregate_target_info(key=_KEY1, *location, **traffic_dict):
             per_walking_distance_list.append(d['per_walking_distance'])
             per_distance_list.append(d['per_distance'])
 
-    total_per_cost = sum(per_cost_list)/len(per_cost_list)
-    total_per_duration = sum(per_duration_list)/len(per_duration_list)
-    total_per_walking_distance = sum(per_walking_distance_list)/len(per_walking_distance_list)
-    total_per_distance = sum(per_distance_list)/len(per_distance_list)
+    total_per_cost = float(format(sum(per_cost_list)/len(per_cost_list), '.2f'))
+    total_per_duration = float(format(sum(per_duration_list)/len(per_duration_list), '.2f'))
+    total_per_walking_distance = float(format(sum(per_walking_distance_list)/len(per_walking_distance_list), '.2f'))
+    total_per_distance = float(format(sum(per_distance_list)/len(per_distance_list), '.2f'))
 
     # print(detail)
     around_market = get_around_place(traffic_location, radius=300, keywords='商场|超级市场', types='060100|060400',
@@ -342,6 +350,19 @@ def quick_sort(array, dict_key=None):
 
         return quick_sort(less) + [base] + quick_sort(greater)
 
+def get_circle(location1, location2, key=_KEY1):
+    '''
+    获取圆的圆心经纬度和半径，单位/m
+    :param location1: 经纬度，eg'113.357903,23.124016'
+    :param location2: 经纬度，eg'113.357903,23.124016'
+    :param key: 请求key
+    :return: ([圆心坐标], [半径])
+    '''
+    if location1 and location2:
+        distance = get_distance(location1, location2)
+        circle_radius = int(distance / 2) + 500
+        center_location = get_center_point(location1, location2)
+        return (center_location, circle_radius)
 
 def main():
     key = _KEY1
@@ -355,36 +376,39 @@ def main():
     lo2 = get_location(address, city, key=key)
     # get_regeo(lo2, key=key)
 
-    distance = get_distance(lo1, lo2)
-    print(distance)
-    circle_radius = int(distance/2)+500
-    print(circle_radius)
-    centre_location = get_centre_point(lo1, lo2)
+    # distance = get_distance(lo1, lo2)
+    # print(distance)
+    # circle_radius = int(distance/2)+500
+    # print(circle_radius)
+    # center_location = get_center_point(lo1, lo2)
+
+    t = get_circle(lo1, lo2)
+    print(t)
 
 
-    tl = get_around_place(centre_location, circle_radius, key=key)
-    best_location_list = []
-    count = 0
-    for i in tl:
-        count += 1
-        target_info_dict = aggregate_target_info(key, lo1, lo2, **i)
-        if target_info_dict:
-            best_location_list.append(target_info_dict)
-
-    print(count)
-    print('######################################################')
-
-    sort_list = quick_sort(best_location_list, dict_key='total_per_duration')
-    for s in sort_list:
-        print(s)
+    # tl = get_around_place(center_location, circle_radius, key=key)
+    # best_location_list = []
+    # count = 0
+    # for i in tl:
+    #     count += 1
+    #     target_info_dict = aggregate_target_info(key, lo1, lo2, **i)
+    #     if target_info_dict:
+    #         best_location_list.append(target_info_dict)
+    #
+    # print(count)
+    # print('######################################################')
+    #
+    # sort_list = quick_sort(best_location_list, dict_key='total_per_duration')
+    # for s in sort_list:
+    #     print(s)
 
 
     # d = get_transit_direction('113.357903,23.124016', lo2, key=key)
     # print(d)
 
 
-    # test_traffic_dict = {'name': '员村山顶(东行)(公交站)', 'location': '113.357903,23.124016'}
-    # aggregate_target_info(_KEY1, lo1, lo2, **test_traffic_dict)
+    test_traffic_dict = {'name': '员村山顶(东行)(公交站)', 'location': '113.357903,23.124016'}
+    aggregate_target_info(_KEY1, lo1, lo2, **test_traffic_dict)
 
     # around_market_list = get_around_place('113.357903,23.124016', radius=300, keywords='商场|超级市场', types='060100|060400', key=key)
     # for a in around_market_list:
@@ -395,17 +419,22 @@ def main():
     #     print(a)
 
 if __name__ == '__main__':
-    main()
+    # main()
     # print(float('2.0'))
     # TODO:公交的班车间隔时间，地点的周边设施范围800m,公寓、超市，站点的公交
+    # t = get_location('拉拉阿拉', '广州')
+    # print(t)
+    # get_regeo('113.339759,23.125753')
+    l = [{'hhh': 'abc'}]
+    ll = json.dumps(l)
+    print(ll)
+    print(type(ll))
 
-    # d = {'name': '员村山顶(东行)(公交站)', 'location': '113.357903,23.124016', 'total_per_cost': 2.0, 'total_per_duration': 1567.0, 'total_per_walking_distance': 661.1, 'total_per_distance': 3121.7, 'detail': [{'per_cost': 2.0, 'per_duration': 1624.4, 'per_walking_distance': 736.6, 'per_distance': 3734.2}, {'per_cost': 2.0, 'per_duration': 1509.6, 'per_walking_distance': 585.6, 'per_distance': 2509.2}]}
-    # # key = 'detail.0.per_cost'
-    # key = 'location'
-    # key_list = key.split('.')
-    # print(key_list)
-    # for k in key_list:
-    #     if k.isdigit():
-    #         k = int(k)
-    #     d = d[k]
-    # print(d)
+    s = '[{"hhh": "abc"}]'
+    ss = json.loads(s)
+    print(ss)
+
+    f = 1.5684
+    ff = float(format(f, '.2f'))
+    print(type(ff))
+    print(ff)
