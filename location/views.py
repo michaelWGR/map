@@ -38,12 +38,13 @@ def transit_direction(request):
         location1 = request.POST.get('location1')
         location2 = request.POST.get('location2')
         key = request.POST.get('key')
+        order_name = request.POST.get('order_name')
+        order_type = request.POST.get('order_type')
 
-        circle = get_circle(location1=location1, location2=location2, key=key)
-        if circle:
-            center_location = circle[0]
-            radius = circle[1]
-            # circle = get_object_or_404(Circle, center_location=center_location, radius=radius)
+        circle_tuple = get_circle(location1=location1, location2=location2, key=key)
+        if circle_tuple:
+            center_location = circle_tuple[0]
+            radius = circle_tuple[1]
             circle_queryset = Circle.objects.filter(center_location=center_location, radius=radius)
             if not circle_queryset:
                 c = Circle(center_location=center_location, radius=radius)
@@ -63,7 +64,7 @@ def transit_direction(request):
                 else:
                     t = traffic_info_filter[0]
 
-                transit_detail_filter = Transit_detail.objects.filter(traffic_info=t)
+                transit_detail_filter = Transit_detail.objects.filter(traffic_info=t, circle=circle)
                 if not transit_detail_filter:
                     transit_detail = aggregate_target_info(key, location1, location2, **traffic)
                     if transit_detail:
@@ -78,11 +79,13 @@ def transit_direction(request):
                         td = Transit_detail(total_per_cost=total_per_cost, total_per_duration=total_per_duration,
                                            total_per_walking_distance=total_per_walking_distance, total_per_distance=total_per_distance,
                                            detail=detail, around_market=around_market, around_housing=around_housing,
-                                           traffic_info=t)
+                                           traffic_info=t, circle=circle)
                         td.save()
 
-            traffic_info = Traffic_info.objects.filter(circle=circle)
-            context['traffic_info'] = traffic_info
+            order_method = order_type+order_name
+            transit_detail = Transit_detail.objects.filter(circle=circle).order_by(order_method)
+            context['transit_detail'] = transit_detail
+            context['order_name'] = order_name
 
     return render(request, 'location/index.html', context)
 

@@ -6,6 +6,7 @@
         <!-- Main content -->
         <div class="col-md-8">
             {% if transit_detail %}
+            <h1>{{ transit_detail.traffic_info.name }}</h1>
             <p>总平均费用: {{ transit_detail.total_per_cost }}元</p>
             <p>总平均时间： {{ transit_detail.total_per_duration }}秒</p>
             <p>总平均步行距离：{{ transit_detail.total_per_walking_distance }}米</p>

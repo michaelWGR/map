@@ -7,5 +7,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('locate', views.locate, name='locate'),
     path('transit', views.transit_direction, name='transit'),
-    path('detail/(<int:traffic_info_id>)', views.detail, name='detail'),
+    path('detail/<int:traffic_info_id>', views.detail, name='detail'),
 ]

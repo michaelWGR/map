@@ -52,14 +52,49 @@
                     {% endfor %}
                 </select>
             </div>
+            <div>
+                <label>排序名称：</label>
+                <select name="order_name">
+                    <option value="total_per_cost">总平均费用</option>
+                    <option value="total_per_duration">总平均时间</option>
+                    <option value="total_per_walking_distance">总平均步行距离</option>
+                    <option value="total_per_distance">总平均距离</option>
+                </select>
+                <label>排序方式：</label>
+                <select name="order_type">
+                    <option value="">顺序</option>
+                    <option value="-">倒序</option>
+                </select>
+            </div>
             <input type="submit" value="search" class="btn btn-primary">
         </form>
 
         <article>
             <ul>
-                {% for t in traffic_info %}
-                <li><a href="{% url 'location:detail' t.id %}">{{ t.id }}  {{ t.name }}  {{ t.location }}  {{ t.circle_id.id }}</a></li>
+                {% if order_name == 'total_per_cost' %}
+                <li>id&nbsp;&nbsp;站点名&nbsp;&nbsp;总平均费用</li>
+                {% for td in transit_detail %}
+                <li><a href="{% url 'location:detail' td.traffic_info.id %}">{{ td.traffic_info.id }}&nbsp;&nbsp;{{ td.traffic_info.name }}&nbsp;&nbsp;{{ td.total_per_cost }}</a></li>
                 {% endfor %}
+
+                {% elif order_name == 'total_per_duration' %}
+                <li>id&nbsp;&nbsp;站点名&nbsp;&nbsp;总平均时间</li>
+                {% for td in transit_detail %}
+                <li><a href="{% url 'location:detail' td.traffic_info.id %}">{{ td.traffic_info.id }}&nbsp;&nbsp;{{ td.traffic_info.name }}&nbsp;&nbsp;{{ td.total_per_duration }}</a></li>
+                {% endfor %}
+
+                {% elif order_name == 'total_per_walking_distance' %}
+                <li>id&nbsp;&nbsp;站点名&nbsp;&nbsp;总平均步行距离</li>
+                {% for td in transit_detail %}
+                <li><a href="{% url 'location:detail' td.traffic_info.id %}">{{ td.traffic_info.id }}&nbsp;&nbsp;{{ td.traffic_info.name }}&nbsp;&nbsp;{{ td.total_per_walking_distance }}</a></li>
+                {% endfor %}
+
+                {% elif order_name == 'total_per_distance' %}
+                <li>id&nbsp;&nbsp;站点名&nbsp;&nbsp;总平均距离</li>
+                {% for td in transit_detail %}
+                <li><a href="{% url 'location:detail' td.traffic_info.id %}">{{ td.traffic_info.id }}&nbsp;&nbsp;{{ td.traffic_info.name }}&nbsp;&nbsp;{{ td.total_per_distance }}</a></li>
+                {% endfor %}
+                {% endif %}
             </ul>
         </article>
 

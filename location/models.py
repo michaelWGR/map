@@ -38,6 +38,7 @@ class Traffic_info(models.Model):
 
 class Transit_detail(models.Model):
     traffic_info = models.ForeignKey(Traffic_info, on_delete=models.CASCADE)
+    circle = models.ForeignKey(Circle, on_delete=models.CASCADE, default=None)
     total_per_cost = models.FloatField(max_length=10, verbose_name='总平均费用（元）')
     total_per_duration = models.FloatField(max_length=10, verbose_name='总平均时间（秒）')
     total_per_walking_distance = models.FloatField(max_length=10, verbose_name='总平均步行路程（米）')

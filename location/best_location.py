@@ -363,6 +363,8 @@ def get_circle(location1, location2, key=_KEY1):
         circle_radius = int(distance / 2) + 500
         center_location = get_center_point(location1, location2)
         return (center_location, circle_radius)
+    else:
+        return
 
 def main():
     key = _KEY1
