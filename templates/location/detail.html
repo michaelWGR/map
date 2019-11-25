@@ -10,7 +10,9 @@
             <p>总平均时间： {{ transit_detail.total_per_duration }}秒</p>
             <p>总平均步行距离：{{ transit_detail.total_per_walking_distance }}米</p>
             <p>总平均距离：{{ transit_detail.total_per_distance }}米</p>
-            <p>交通明细：</p>
+            <p>交通明细：{{ transit_detail.detail }}</p>
+            <p>周边超市: {{ transit_detail.around_market }}</p>
+            <p>周边公寓: {{ transit_detail.around_housing }}</p>
 
             {% endif %}
 

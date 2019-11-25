@@ -80,33 +80,7 @@ def transit_direction(request):
                                            detail=detail, around_market=around_market, around_housing=around_housing,
                                            traffic_info=t)
                         td.save()
-            # else:
-            #     for traffic in traffic_info:
-            #         transit_detail_queryset = Transit_detail.objects.filter(traffic_info=traffic)
-            #         if not transit_detail_queryset:
-            #             traffic_dict = {'name': traffic.name, 'location': traffic.location}
-            #             print(traffic_dict)
-            #             transit_detail = aggregate_target_info(key, location1, location2, **traffic_dict)
-            #             if transit_detail:
-            #                 total_per_cost = transit_detail['total_per_cost']
-            #                 total_per_duration = transit_detail['total_per_duration']
-            #                 total_per_walking_distance = transit_detail['total_per_walking_distance']
-            #                 total_per_distance = transit_detail['total_per_distance']
-            #                 detail = json.dumps(transit_detail['detail'])
-            #                 around_market = json.dumps(transit_detail['around_market'])
-            #                 around_housing = json.dumps(transit_detail['around_housing'])
-            #
-            #                 td = Transit_detail(total_per_cost=total_per_cost, total_per_duration=total_per_duration,
-            #                                     total_per_walking_distance=total_per_walking_distance,
-            #                                     total_per_distance=total_per_distance,
-            #                                     detail=detail, around_market=around_market,
-            #                                     around_housing=around_housing,
-            #                                     traffic_info=traffic)
-            #                 td.save()
-            #         else:
-            #             continue
 
-            # traffic_info = Traffic_info.objects.filter(circle=circle)
             traffic_info = Traffic_info.objects.filter(circle=circle)
             context['traffic_info'] = traffic_info
 
@@ -115,6 +89,9 @@ def transit_direction(request):
 def detail(request, traffic_info_id):
     # transit_detail_by_id = Transit_detail.objects.filter(traffic_info_id=traffic_info_id)
     transit_detail_by_id = get_object_or_404(Transit_detail, traffic_info_id=traffic_info_id)
+    transit_detail_by_id.detail = json.loads(transit_detail_by_id.detail)
+    transit_detail_by_id.around_market = json.loads(transit_detail_by_id.around_market)
+    transit_detail_by_id.around_housing = json.loads(transit_detail_by_id.around_housing)
     context = {
         'transit_detail': transit_detail_by_id
     }

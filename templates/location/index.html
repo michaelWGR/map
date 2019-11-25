@@ -2,110 +2,111 @@
 
 {% block main %}
 
-    <div class="row">
+<div class="row">
 
-        <!-- Main content -->
-        <div class="col-md-8">
-            <form action="{% url 'location:locate' %}" method="get">
-                <div>
-                    <label>具体地点：</label>
-                    <input type="text" size="50" name="address" placeholder="请输入具体地点">
-                </div>
-                <div>
-                    <label>城市：</label>
-                    <select name="city">
-                        <option value="广州">广州</option>
-                    </select>
-                </div>
-                <div>
-                    <label>请求秘钥：</label>
-                    <select name="key">
-                        {% for k in key_list %}
-                            <option value="{{ k.key }}">{{ k.key }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <br>
-                <input type="submit" value="查询" class="btn btn-primary">
-            </form>
-
-
-            {% if location %}
-                <p>{{ location }}</p>
-            {% endif %}
-            {% for full_address in full_address_list %}
-                <p>{{ full_address }}</p>
-            {% endfor %}
-
-            <form action="{% url 'location:transit' %}" method="post">
-                {% csrf_token %}
-                <div>
-                    <label>两个坐标点：</label>
-                    <input type="text" name="location1" placeholder="请输入坐标点">
-                    <input type="text" name="location2" placeholder="请输入坐标点">
-                </div>
-                <div>
-                    <label>请求秘钥：</label>
-                    <select name="key">
-                        {% for k in key_list %}
-                            <option value="{{ k.key }}">{{ k.key }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <input type="submit" value="search" class="btn btn-primary">
-            </form>
-            <article>
-                <ul>
-                    {% for t in traffic_info %}
-                    <li><a href="{% url 'location:detail' t.id %}">{{ t.id }}  {{ t.name }}  {{ t.location }}  {{ t.circle_id.id }}</a></li>
+    <!-- Main content -->
+    <div class="col-md-8">
+        <form action="{% url 'location:locate' %}" method="get">
+            <div>
+                <label>具体地点：</label>
+                <input type="text" size="50" name="address" placeholder="请输入具体地点">
+            </div>
+            <div>
+                <label>城市：</label>
+                <select name="city">
+                    <option value="广州">广州</option>
+                </select>
+            </div>
+            <div>
+                <label>请求秘钥：</label>
+                <select name="key">
+                    {% for k in key_list %}
+                        <option value="{{ k.key }}">{{ k.key }}</option>
                     {% endfor %}
-                </ul>
-            </article>
+                </select>
+            </div>
+            <input type="submit" value="查询" class="btn btn-primary">
+        </form>
 
 
-            <article>
+        {% if location %}
+            <p>{{ location }}</p>
+        {% endif %}
+        {% for full_address in full_address_list %}
+            <p>{{ full_address }}</p>
+        {% endfor %}
+        <br>
 
-                <h2 class="article-title">Buy unbranded</h2>
-                <p class="article-meta">Posted on <time datetime="2013-05-14">14 May</time> by <a href="#" rel="author">Joe Bloggs</a></p>
+        <form action="{% url 'location:transit' %}" method="post">
+            {% csrf_token %}
+            <div>
+                <label>两个坐标点：</label>
+                <input type="text" name="location1" placeholder="请输入坐标点">
+                <input type="text" name="location2" placeholder="请输入坐标点">
+            </div>
+            <div>
+                <label>请求秘钥：</label>
+                <select name="key">
+                    {% for k in key_list %}
+                        <option value="{{ k.key }}">{{ k.key }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input type="submit" value="search" class="btn btn-primary">
+        </form>
 
-                <p>Purchasing a template license for 8.00 GBP (at time of writing around 12 USD) gives you the right to remove any branding including links, logos and source tags relating to ZyPOP. As well as waiving the attribution requirement, your payment will also help us provide continued support for users as well as creating new web templates. Find out more about how to buy at the licensing page on our website which can be accessed at <a href="#licensing" title="template license">#licensing</a></p>
-
-                <h3>Lorem lipsum</h3>
-
-                <p>Morbi fermentum condimentum felis, commodo vestibulum sem mattis sed. Aliquam magna ante, mollis vitae tincidunt in, malesuada vitae turpis. Sed aliquam libero ut velit bibendum consectetur. Quisque sagittis, est in laoreet semper, enim dui consequat felis, faucibus ornare urna velit nec leo. Maecenas condimentum velit vitae est lobortis fermentum. In tristique sem vitae metus ornare luctus tempus nisl volutpat. Integer et est id nisi tempus pharetra sagittis et libero.</p>
-
-                <a href="#" class="btn btn-primary">Read more</a>
-                <a href="#" class="btn btn-secondary">Comments</a>
-            </article>
-
-
-            <!-- Example pagination Bootstrap component -->
-            <nav>
-                <ul class="pagination">
-                        <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        </li>
-                </ul>
-            </nav>
-        </div>
+        <article>
+            <ul>
+                {% for t in traffic_info %}
+                <li><a href="{% url 'location:detail' t.id %}">{{ t.id }}  {{ t.name }}  {{ t.location }}  {{ t.circle_id.id }}</a></li>
+                {% endfor %}
+            </ul>
+        </article>
 
 
-        <!-- Sidebar -->
+        <article>
+
+            <h2 class="article-title">Buy unbranded</h2>
+            <p class="article-meta">Posted on <time datetime="2013-05-14">14 May</time> by <a href="#" rel="author">Joe Bloggs</a></p>
+
+            <p>Purchasing a template license for 8.00 GBP (at time of writing around 12 USD) gives you the right to remove any branding including links, logos and source tags relating to ZyPOP. As well as waiving the attribution requirement, your payment will also help us provide continued support for users as well as creating new web templates. Find out more about how to buy at the licensing page on our website which can be accessed at <a href="#licensing" title="template license">#licensing</a></p>
+
+            <h3>Lorem lipsum</h3>
+
+            <p>Morbi fermentum condimentum felis, commodo vestibulum sem mattis sed. Aliquam magna ante, mollis vitae tincidunt in, malesuada vitae turpis. Sed aliquam libero ut velit bibendum consectetur. Quisque sagittis, est in laoreet semper, enim dui consequat felis, faucibus ornare urna velit nec leo. Maecenas condimentum velit vitae est lobortis fermentum. In tristique sem vitae metus ornare luctus tempus nisl volutpat. Integer et est id nisi tempus pharetra sagittis et libero.</p>
+
+            <a href="#" class="btn btn-primary">Read more</a>
+            <a href="#" class="btn btn-secondary">Comments</a>
+        </article>
 
 
-
+        <!-- Example pagination Bootstrap component -->
+        <nav>
+            <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </li>
+            </ul>
+        </nav>
     </div>
+
+
+    <!-- Sidebar -->
+
+
+
+</div>
 
 {% endblock main %}
