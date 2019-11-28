@@ -6,19 +6,73 @@
         <!-- Main content -->
         <div class="col-md-8">
             {% if transit_detail %}
-            <h1>{{ transit_detail.traffic_info.name }}</h1>
+            <h1>{{ transit_detail.traffic_info.name }}</h1><br>
             <p>总平均费用: {{ transit_detail.total_per_cost }}元</p>
             <p>总平均时间： {{ transit_detail.total_per_duration }}秒</p>
             <p>总平均步行距离：{{ transit_detail.total_per_walking_distance }}米</p>
             <p>总平均距离：{{ transit_detail.total_per_distance }}米</p>
-            <p>交通明细：{{ transit_detail.detail }}</p>
-            <p>周边超市: {{ transit_detail.around_market }}</p>
-            <p>周边公寓: {{ transit_detail.around_housing }}</p>
+
+            <div>
+                <h3>交通明细</h3>
+                <ol>
+                {% for detail in transit_detail.detail %}
+                <li><h4>目的</h4>
+                <p>平均费用：{{ detail.per_cost }}元</p>
+                <p>平均时间：{{ detail.per_duration }}秒</p>
+                <p>平均步行距离：{{ detail.per_walking_distance }}</p>
+                <p>平均距离：{{ detail.per_distance }}</p>
+                <h5>交通明细</h5>
+                <ol>
+
+                {% for segment in detail.total_segments %}
+                <li>
+                    {% if segment.bus_name %}
+                        <span>公交线路：</span>
+                        {% for bus in segment.bus_name %}
+                            {{ bus }}、
+                        {% endfor %}
+                    {% endif %}
+                    {% if segment.entrance %}
+                        <span>地铁入口：</span>
+                        {% for entrance in segment.entrance %}
+                            {{ entrance.name }}
+                        {% endfor %}
+                    {% endif %}
+                    {% if segment.exit %}
+                        <span>地铁出口：</span>
+                        {% for exit in segment.exit %}
+                            {{ exit.name }}
+                        {% endfor %}
+                    {% endif %}
+                </li>
+                {% endfor %}
+
+                </ol>
+                </li>
+                {% endfor %}
+                </ol>
+            </div><br>
+
+            <div>
+                <h3>周边超市</h3>
+                {% for market in  transit_detail.around_market %}
+                <span>{{ market.name }}、</span>
+                {% endfor %}
+            </div><br>
+
+            <div>
+                <h3>周边公寓</h3>
+                {% for housing in transit_detail.around_housing %}
+                <span>{{ housing.name }}、</span>
+                {% endfor %}
+            </div>
 
             {% endif %}
 
 
         </div>
     </div>
+    <br><br>
+    <br />
 
 {% endblock %}
