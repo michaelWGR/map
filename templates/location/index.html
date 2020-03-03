@@ -1,33 +1,45 @@
 {% extends 'base.html' %}
 
 {% block main %}
+<script>
+function keepValue(id) {
+    //var fm = document.getElementById(id);
+    //var collection = fm.getElementsByClassName("text");
+    //for (var i=0; i<collection.length; i++){
+
+    //}
+    var x = document.getElementById(id);
+    x.innerHTML = "hello";
+}
+</script>
 
 <div class="row">
 
     <!-- Main content -->
     <div class="col-md-8">
-        <form action="{% url 'location:locate' %}" method="get">
-            <div>
-                <label>具体地点：</label>
-                <input type="text" size="50" name="address" placeholder="请输入具体地点">
-            </div>
-            <div>
-                <label>城市：</label>
+        <form id="locate" action="{% url 'location:locate' %}" method="get">
+
+            <label>具体地点：
+                <input type="text" size="50" name="address" class="text" placeholder="请输入具体地点">
+            </label>
+
+            <label>城市：
                 <select name="city">
                     <option value="广州">广州</option>
                 </select>
-            </div>
-            <div>
-                <label>请求秘钥：</label>
-                <select name="key">
-                    {% for k in key_list %}
-                        <option value="{{ k.key }}">{{ k.key }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <input type="submit" value="查询" class="btn btn-primary">
-        </form>
+            </label>
 
+            <label>请求秘钥：
+                <select name="key">
+                {% for k in key_list %}
+                    <option value="{{ k.key }}">{{ k.key }}</option>
+                {% endfor %}
+                </select>
+            </label>
+
+            <input type="submit" value="查询" class="btn btn-primary" onclick="keepValue('demo')">
+        </form>
+        <p id="demo"></p>
 
         {% if location %}
             <p>{{ location }}</p>
@@ -39,33 +51,36 @@
 
         <form action="{% url 'location:transit' %}" method="post">
             {% csrf_token %}
-            <div>
-                <label>两个坐标点：</label>
-                <input type="text" name="location1" placeholder="请输入坐标点">
-                <input type="text" name="location2" placeholder="请输入坐标点">
-            </div>
-            <div>
-                <label>请求秘钥：</label>
+
+            <label>两个坐标点：
+                <input type="text" name="location1" class="text" placeholder="请输入坐标点">
+                <input type="text" name="location2" class="text" placeholder="请输入坐标点">
+            </label>
+
+            <label>请求秘钥：
                 <select name="key">
-                    {% for k in key_list %}
-                        <option value="{{ k.key }}">{{ k.key }}</option>
-                    {% endfor %}
+                {% for k in key_list %}
+                    <option value="{{ k.key }}">{{ k.key }}</option>
+                {% endfor %}
                 </select>
-            </div>
-            <div>
-                <label>排序名称：</label>
+            </label>
+
+            <label>排序名称：
                 <select name="order_name">
                     <option value="total_per_cost">总平均费用</option>
                     <option value="total_per_duration">总平均时间</option>
                     <option value="total_per_walking_distance">总平均步行距离</option>
                     <option value="total_per_distance">总平均距离</option>
                 </select>
-                <label>排序方式：</label>
+            </label>
+
+            <label>排序方式：
                 <select name="order_type">
                     <option value="">顺序</option>
                     <option value="-">倒序</option>
                 </select>
-            </div>
+            </label>
+
             <input type="submit" value="search" class="btn btn-primary">
         </form>
 
