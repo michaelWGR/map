@@ -1,5 +1,6 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from .models import Keymsg, Traffic_info, Circle, Transit_detail
 from .best_location import *
 import json
@@ -12,6 +13,33 @@ def index(request):
         'key_list': key_list,
     }
     return render(request, 'location/index.html', context)
+
+@csrf_exempt
+def search_location(request):
+    context = {}
+    if request.method == 'GET':
+        address = request.GET.get('address')
+        city = request.GET.get('city')
+        key = request.GET.get('key')
+        lo = get_location(address=address, city=city, key=key)
+        if lo:
+            full_address_list = get_regeo(location=lo, key=key)
+            context['full_address_list'] = full_address_list
+            context['location'] = lo
+            context['code'] = 0
+
+        else:
+            context = {
+                'code': 1,
+                'erro': 'cannot get location!'
+            }
+
+    else:
+        context = {
+            'code': 1,
+            'erro': 'method is wrong!'
+        }
+    return HttpResponse(json.dumps(context, ensure_ascii=False))
 
 def locate(request):
     key_list = Keymsg.objects.all().order_by('id')

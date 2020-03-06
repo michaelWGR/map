@@ -1,60 +1,53 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block main %}
-<script>
-function keepValue(id) {
-    //var fm = document.getElementById(id);
-    //var collection = fm.getElementsByClassName("text");
-    //for (var i=0; i<collection.length; i++){
-
-    //}
-    var x = document.getElementById(id);
-    x.innerHTML = "hello";
-}
-</script>
 
 <div class="row">
 
     <!-- Main content -->
     <div class="col-md-8">
-        <form id="locate" action="{% url 'location:locate' %}" method="get">
+        <form id="locate">
 
             <label>具体地点：
-                <input type="text" size="50" name="address" class="text" placeholder="请输入具体地点">
+                <input id="address" type="text" size="50" name="address" class="text" placeholder="请输入具体地点">
             </label>
 
             <label>城市：
-                <select name="city">
+                <select id="city" name="city">
                     <option value="广州">广州</option>
                 </select>
             </label>
 
             <label>请求秘钥：
-                <select name="key">
+                <select id="key" name="key">
                 {% for k in key_list %}
                     <option value="{{ k.key }}">{{ k.key }}</option>
                 {% endfor %}
                 </select>
             </label>
 
-            <input type="submit" value="查询" class="btn btn-primary" onclick="keepValue('demo')">
+            <input id="search" type="button" value="查询" class="btn btn-primary">
         </form>
-        <p id="demo"></p>
+        <ul id="full_address">
+        </ul>
 
-        {% if location %}
-            <p>{{ location }}</p>
-        {% endif %}
-        {% for full_address in full_address_list %}
-            <p>{{ full_address }}</p>
-        {% endfor %}
+
+
+{#        {% if location %}#}
+{#            <p>{{ location }}</p>#}
+{#        {% endif %}#}
+{#        {% for full_address in full_address_list %}#}
+{#            <p>{{ full_address }}</p>#}
+{#        {% endfor %}#}
         <br>
 
         <form action="{% url 'location:transit' %}" method="post">
             {% csrf_token %}
 
             <label>两个坐标点：
-                <input type="text" name="location1" class="text" placeholder="请输入坐标点">
-                <input type="text" name="location2" class="text" placeholder="请输入坐标点">
+                <input id="location1" type="text" name="location1" class="text" placeholder="请输入坐标点">
+                <input id="location2" type="text" name="location2" class="text" placeholder="请输入坐标点">
             </label>
 
             <label>请求秘钥：
@@ -160,3 +153,7 @@ function keepValue(id) {
 </div>
 
 {% endblock main %}
+
+{% block bodyjs %}
+<script src="{% static 'location/js/index.js' %}"></script>
+{% endblock %}
