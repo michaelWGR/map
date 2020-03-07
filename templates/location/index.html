@@ -6,11 +6,11 @@
 <div class="row">
 
     <!-- Main content -->
-    <div class="col-md-8">
+    <article class="col-md-8">
         <form id="locate">
 
             <label>具体地点：
-                <input id="address" type="text" size="50" name="address" class="text" placeholder="请输入具体地点">
+                <input id="address" type="text" size="40" name="address" class="text" placeholder="请输入具体地点">
             </label>
 
             <label>城市：
@@ -22,44 +22,33 @@
             <label>请求秘钥：
                 <select id="key" name="key">
                 {% for k in key_list %}
-                    <option value="{{ k.key }}">{{ k.key }}</option>
+                    <option value="{{ k.key }}">{{ k.id }}&nbsp&nbsp</option>
                 {% endfor %}
                 </select>
             </label>
-
-            <input id="search" type="button" value="查询" class="btn btn-primary">
+            &nbsp&nbsp
+            <input id="search" type="button" value="查询坐标" class="btn btn-primary">
         </form>
         <ul id="full_address">
         </ul>
-
-
-
-{#        {% if location %}#}
-{#            <p>{{ location }}</p>#}
-{#        {% endif %}#}
-{#        {% for full_address in full_address_list %}#}
-{#            <p>{{ full_address }}</p>#}
-{#        {% endfor %}#}
         <br>
 
-        <form action="{% url 'location:transit' %}" method="post">
-            {% csrf_token %}
-
+        <form>
             <label>两个坐标点：
-                <input id="location1" type="text" name="location1" class="text" placeholder="请输入坐标点">
-                <input id="location2" type="text" name="location2" class="text" placeholder="请输入坐标点">
+                <input id="location1" type="text" name="location1" placeholder="请输入坐标点">
+                <input id="location2" type="text" name="location2" placeholder="请输入坐标点">
             </label>
 
-            <label>请求秘钥：
+<!--            <label>请求秘钥：
                 <select name="key">
                 {% for k in key_list %}
-                    <option value="{{ k.key }}">{{ k.key }}</option>
+                    <option value="{{ k.key }}">{{ k.id }}&nbsp&nbsp</option>
                 {% endfor %}
                 </select>
             </label>
-
-            <label>排序名称：
-                <select name="order_name">
+-->
+            <label>排序值：
+                <select id="order_name" name="order_name">
                     <option value="total_per_cost">总平均费用</option>
                     <option value="total_per_duration">总平均时间</option>
                     <option value="total_per_walking_distance">总平均步行距离</option>
@@ -68,46 +57,25 @@
             </label>
 
             <label>排序方式：
-                <select name="order_type">
+                <select id="order_type" name="order_type">
                     <option value="">顺序</option>
                     <option value="-">倒序</option>
                 </select>
             </label>
-
-            <input type="submit" value="search" class="btn btn-primary">
+            &nbsp&nbsp
+            <input id="search_transit" type="button" value="查询路线" class="btn btn-primary">
         </form>
+        <br>
 
         <article>
-            <ul>
-                {% if order_name == 'total_per_cost' %}
-                <li>id&nbsp;&nbsp;站点名&nbsp;&nbsp;总平均费用</li>
-                {% for td in transit_detail %}
-                <li><a href="{% url 'location:detail' td.traffic_info.id %}">{{ td.traffic_info.id }}&nbsp;&nbsp;{{ td.traffic_info.name }}&nbsp;&nbsp;{{ td.total_per_cost }}</a></li>
-                {% endfor %}
+            <table id="transit_table">
 
-                {% elif order_name == 'total_per_duration' %}
-                <li>id&nbsp;&nbsp;站点名&nbsp;&nbsp;总平均时间</li>
-                {% for td in transit_detail %}
-                <li><a href="{% url 'location:detail' td.traffic_info.id %}">{{ td.traffic_info.id }}&nbsp;&nbsp;{{ td.traffic_info.name }}&nbsp;&nbsp;{{ td.total_per_duration }}</a></li>
-                {% endfor %}
 
-                {% elif order_name == 'total_per_walking_distance' %}
-                <li>id&nbsp;&nbsp;站点名&nbsp;&nbsp;总平均步行距离</li>
-                {% for td in transit_detail %}
-                <li><a href="{% url 'location:detail' td.traffic_info.id %}">{{ td.traffic_info.id }}&nbsp;&nbsp;{{ td.traffic_info.name }}&nbsp;&nbsp;{{ td.total_per_walking_distance }}</a></li>
-                {% endfor %}
-
-                {% elif order_name == 'total_per_distance' %}
-                <li>id&nbsp;&nbsp;站点名&nbsp;&nbsp;总平均距离</li>
-                {% for td in transit_detail %}
-                <li><a href="{% url 'location:detail' td.traffic_info.id %}">{{ td.traffic_info.id }}&nbsp;&nbsp;{{ td.traffic_info.name }}&nbsp;&nbsp;{{ td.total_per_distance }}</a></li>
-                {% endfor %}
-                {% endif %}
-            </ul>
+            </table>
         </article>
 
 
-        <article>
+<!--        <article>
 
             <h2 class="article-title">Buy unbranded</h2>
             <p class="article-meta">Posted on <time datetime="2013-05-14">14 May</time> by <a href="#" rel="author">Joe Bloggs</a></p>
@@ -121,7 +89,7 @@
             <a href="#" class="btn btn-primary">Read more</a>
             <a href="#" class="btn btn-secondary">Comments</a>
         </article>
-
+-->
 
         <!-- Example pagination Bootstrap component -->
         <nav>
@@ -143,11 +111,7 @@
                     </li>
             </ul>
         </nav>
-    </div>
-
-
-    <!-- Sidebar -->
-
+    </article>
 
 
 </div>
