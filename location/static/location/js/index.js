@@ -7,7 +7,7 @@ $(function () {
         };
         $.get("search_location", params, function (data) {
             var full_address = $("#full_address");
-            var res = jQuery.parseJSON(data);
+            var res = data;
             var location1 = $("#location1"), location2 = $("#location2");
             full_address.empty();
             if (res.code === 0){
@@ -31,6 +31,7 @@ $(function () {
             }
         });
     });
+
     $("#search_transit").click(function () {
         var order_name = $("#order_name");
         var data = {
@@ -53,7 +54,6 @@ $(function () {
                     console.log(res.transit_detail[t].traffic_info__name);
                     table.append(detail);
                 }
-
             }
             else if (res.code === 1) {
                 table.append(res.error);
