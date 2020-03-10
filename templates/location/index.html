@@ -2,94 +2,78 @@
 {% load static %}
 
 {% block main %}
-
 <div class="row">
 
     <!-- Main content -->
-    <article class="col-md-8">
-        <form id="locate">
+    <article class="col-md-11">
+        <form class="form-inline" role="form">
+            <div class="form-group has-feedback">
+                <label for="address">具体地点：</label>
+                <div>
+                    <input class="form-control" id="address" type="text" size="50" name="address" placeholder="请输入具体地点">
+                    <a href="#"><span class="glyphicon glyphicon-remove form-control-feedback" style="display:inline-block;"></span></a>
+                </div>
 
-            <label>具体地点：
-                <input id="address" type="text" size="40" name="address" class="text" placeholder="请输入具体地点">
-            </label>
-
-            <label>城市：
+            </div>
+            <div class="form-group">
+                <label for="city">城市：</label>
                 <select id="city" name="city">
                     <option value="广州">广州</option>
                 </select>
-            </label>
-
-            <label>请求秘钥：
+            </div>
+            <div class="form-group">
+                <label for="key">请求秘钥：</label>
                 <select id="key" name="key">
                 {% for k in key_list %}
-                    <option value="{{ k.key }}">{{ k.id }}&nbsp&nbsp</option>
+                    <option value="{{ k.key }}">{{ k.id }}&nbsp;&nbsp;</option>
                 {% endfor %}
                 </select>
-            </label>
-            &nbsp&nbsp
-            <input id="search" type="button" value="查询坐标" class="btn btn-primary">
+            </div>
+            &nbsp;&nbsp;
+            <input class="btn btn-primary" id="search" type="button" value="查询坐标">
         </form>
         <ul id="full_address">
         </ul>
         <br>
 
-        <form>
-            <label>两个坐标点：
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <label for="location1">第一坐标：</label>
                 <input id="location1" type="text" name="location1" placeholder="请输入坐标点">
+            </div>
+            <div class="form-group">
+                <label for="location2">第一坐标：</label>
                 <input id="location2" type="text" name="location2" placeholder="请输入坐标点">
-            </label>
-
-<!--            <label>请求秘钥：
-                <select name="key">
-                {% for k in key_list %}
-                    <option value="{{ k.key }}">{{ k.id }}&nbsp&nbsp</option>
-                {% endfor %}
-                </select>
-            </label>
--->
-            <label>排序值：
+            </div>
+            <div class="form-group">
+                <label for="order_name">排序值：</label>
                 <select id="order_name" name="order_name">
                     <option value="total_per_cost">总平均费用</option>
                     <option value="total_per_duration">总平均时间</option>
                     <option value="total_per_walking_distance">总平均步行距离</option>
                     <option value="total_per_distance">总平均距离</option>
                 </select>
-            </label>
-
-            <label>排序方式：
+            </div>
+            <div class="form-group">
+                <label for="order_type">排序方式：</label>
                 <select id="order_type" name="order_type">
                     <option value="">顺序</option>
                     <option value="-">倒序</option>
                 </select>
-            </label>
-            &nbsp&nbsp
-            <input id="search_transit" type="button" value="查询路线" class="btn btn-primary">
+            </div>
+            &nbsp;&nbsp;
+            <input class="btn btn-primary" id="search_transit" type="button" value="查询路线">
         </form>
         <br>
 
-        <article>
-            <table id="transit_table">
-
-
+        <div>
+            <table class="table table-hover" id="transit_table">
+                <thead id="table_header">
+                </thead>
+                <tbody id="table_body">
+                </tbody>
             </table>
-        </article>
-
-
-<!--        <article>
-
-            <h2 class="article-title">Buy unbranded</h2>
-            <p class="article-meta">Posted on <time datetime="2013-05-14">14 May</time> by <a href="#" rel="author">Joe Bloggs</a></p>
-
-            <p>Purchasing a template license for 8.00 GBP (at time of writing around 12 USD) gives you the right to remove any branding including links, logos and source tags relating to ZyPOP. As well as waiving the attribution requirement, your payment will also help us provide continued support for users as well as creating new web templates. Find out more about how to buy at the licensing page on our website which can be accessed at <a href="#licensing" title="template license">#licensing</a></p>
-
-            <h3>Lorem lipsum</h3>
-
-            <p>Morbi fermentum condimentum felis, commodo vestibulum sem mattis sed. Aliquam magna ante, mollis vitae tincidunt in, malesuada vitae turpis. Sed aliquam libero ut velit bibendum consectetur. Quisque sagittis, est in laoreet semper, enim dui consequat felis, faucibus ornare urna velit nec leo. Maecenas condimentum velit vitae est lobortis fermentum. In tristique sem vitae metus ornare luctus tempus nisl volutpat. Integer et est id nisi tempus pharetra sagittis et libero.</p>
-
-            <a href="#" class="btn btn-primary">Read more</a>
-            <a href="#" class="btn btn-secondary">Comments</a>
-        </article>
--->
+        </div>
 
         <!-- Example pagination Bootstrap component -->
         <nav>
@@ -100,8 +84,8 @@
                             <span class="sr-only">Previous</span>
                         </a>
                     </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
                     <li class="page-item"><a class="page-link" href="#">3</a></li>
                     <li class="page-item">
                         <a class="page-link" href="#" aria-label="Next">
@@ -115,9 +99,13 @@
 
 
 </div>
-
 {% endblock main %}
 
 {% block bodyjs %}
 <script src="{% static 'location/js/index.js' %}"></script>
+<script>
+$(function () {
+    $("#address").autoClearButtonInput("create");
+})
+</script>
 {% endblock %}
