@@ -6803,10 +6803,3 @@ html {
 @media (min-width: 992px) {
   html {
     font-size: 14px; } }
-
-.detail-table {
-  width: auto;
-  padding: 0 15px;
-  /*overflow: scroll;*/
-  height: 100%;
-}
