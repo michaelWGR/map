@@ -42,7 +42,7 @@ $(function () {
             tableBody.empty();
             console.log(data.code);
             if (data.code === 0) {
-                let header = "<tr><th>id</th><th>站点名</th><th>" + order_name.find("option:selected").text() + "</th></tr>";
+                let header = "<tr><th>traffic_info_id</th><th>站点名</th><th>" + order_name.find("option:selected").text() + "</th></tr>";
                 tableHeader.append(header);
                 console.log(header);
                 for (t in data.transit_detail) {

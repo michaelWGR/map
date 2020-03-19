@@ -31,21 +31,8 @@
                     <!-- Main navigation items -->
                     <nav class="navbar navbar-dark">
                         <div id="mainNavbar">
-                            <ul class="flex-column mr-auto">
-                                <li class="nav-item active">
-                                        <a class="nav-link active" href="{% url 'location:index' %}">Home <span class="sr-only">(current)</span></a>
-                                </li>
-
-                                <li class="nav-item dropdown">
-                                            <a class="nav-link dropdown-toggle" href="#MenuDropdown" data-toggle="collapse" aria-controls="MenuDropdown" aria-expanded="false">Examples &amp; Pages</a>
-                                            <ul id="MenuDropdown" class="sub-navbar collapse flex-column">
-                                                <li class="nav-item"><a class="nav-link" href="examples.html">Style Examples</a></li>
-                                                <li class="nav-item"><a class="nav-link" href="three-column.html">Three Column</a></li>
-                                                <li class="nav-item"><a class="nav-link" href="one-column.html">One column / no sidebar</a></li>
-                                                <li class="nav-item"><a class="nav-link"  href="text.html">Text / left sidebar</a></li>
-                                            </ul>
-                                </li>
-                            </ul>
+                            {% block mainNavbar %}
+                            {% endblock %}
                         </div>
                     </nav>
                 </div>
@@ -67,14 +54,8 @@
         <script src="{% static 'jquery/js/jquery-3.4.1.min.js' %}"></script>
         <script src="{% static 'jquery/js/popper.min.js' %}"></script>
         <script src="{% static 'bootstrap-4.4.1/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'location/js/base.js' %}"></script>
         {% block bodyjs %}
         {% endblock %}
-        <script>
-        $(function () {
-            $("#title").click(function () {
-                window.location.href = "/";
-            });
-        });
-        </script>
     </body>
 </html>

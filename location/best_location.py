@@ -89,7 +89,6 @@ def get_around_place(location, radius, offset='20', keywords='地铁|公交', ty
         rp = requests.get(url=url, params=params)
         rp_dict = json.loads(rp.content)
         pois = rp_dict['pois']
-        # print(pois)
         if len(pois) != 0:
             page += 1
             for i in pois:
@@ -98,7 +97,6 @@ def get_around_place(location, radius, offset='20', keywords='地铁|公交', ty
                     traffic_info_dict['name'] = i['name']
                     traffic_info_dict['location'] = i['location']
                     traffic_list.append(traffic_info_dict)
-                    print(traffic_info_dict)
         else:
             break
     return traffic_list
@@ -189,16 +187,12 @@ def get_transit_direction(origin, destination, city='广州', cityd='广州', ex
     rp = requests.get(url=url, params=params)
     rp_dict = json.loads(rp.content)
 
-    # j = json.dumps(rp_dict)   #测试
-    # print(j)
-
     if rp_dict['route']['transits']:
         cost_list = []
         duration_list = []
         walking_distance_list = []
         distance_list = []
         transits_list = rp_dict['route']['transits']
-
         total_segments_list = []
 
         try:
@@ -208,7 +202,8 @@ def get_transit_direction(origin, destination, city='广州', cityd='广州', ex
                 exit = []
                 aggre_segments = {}
                 if t != {}:
-                    cost_list.append(float(t['cost']))
+                    if type(t['cost']) == str:
+                        cost_list.append(float(t['cost']))
                     duration_list.append(float(t['duration']))
                     walking_distance_list.append(float(t['walking_distance']))
                     distance_list.append(float(t['distance']))
@@ -228,9 +223,6 @@ def get_transit_direction(origin, destination, city='广州', cityd='广州', ex
                 aggre_segments['exit'] = exit
 
                 total_segments_list.append(aggre_segments)
-
-                    # print(segments_list)
-                    # print(t)
 
             per_cost = sum(cost_list) / len(cost_list)
             per_duration = sum(duration_list) / len(duration_list)
@@ -261,49 +253,52 @@ def aggregate_target_info(key=_KEY1, *location, **traffic_dict):
     :param traffic_dict: 一个交通站点的信息，例如{'name': '员村山顶(东行)(公交站)', 'location': '113.357903,23.124016'}
     :return: 目标交通站的通勤时间信息，例如{name, location, total_per_duration, ......,detail: [{per_duration, ....}, {per_duration, ....}], around_place: {...}}
     '''
-    target_info_dict = {}
-    traffic_location = traffic_dict['location']
-    # print(traffic_dict)
-    # print(traffic_location)
+    try:
+        target_info_dict = {}
+        traffic_location = traffic_dict['location']
+        traffic_name = traffic_dict['name']
 
-    detail = []
-    per_cost_list = []
-    per_duration_list = []
-    per_walking_distance_list = []
-    per_distance_list = []
-    for lo in location:
-        d = get_transit_direction(traffic_location, lo, key=key)
-        if d != {}:
-            detail.append(d)
-            per_cost_list.append(d['per_cost'])
-            per_duration_list.append(d['per_duration'])
-            per_walking_distance_list.append(d['per_walking_distance'])
-            per_distance_list.append(d['per_distance'])
+        detail = []
+        per_cost_list = []
+        per_duration_list = []
+        per_walking_distance_list = []
+        per_distance_list = []
+        for lo in location:
+            d = get_transit_direction(traffic_location, lo, key=key)
+            if d != {}:
+                detail.append(d)
+                per_cost_list.append(d['per_cost'])
+                per_duration_list.append(d['per_duration'])
+                per_walking_distance_list.append(d['per_walking_distance'])
+                per_distance_list.append(d['per_distance'])
+            else:
+                # TODO: 有错误的数据要区分开来
+                print('################# wrong traffic: {}'.format(traffic_name))
+        total_per_cost = float(format(sum(per_cost_list)/len(per_cost_list), '.2f'))
+        total_per_duration = float(format(sum(per_duration_list)/len(per_duration_list), '.2f'))
+        total_per_walking_distance = float(format(sum(per_walking_distance_list)/len(per_walking_distance_list), '.2f'))
+        total_per_distance = float(format(sum(per_distance_list)/len(per_distance_list), '.2f'))
 
-    total_per_cost = float(format(sum(per_cost_list)/len(per_cost_list), '.2f'))
-    total_per_duration = float(format(sum(per_duration_list)/len(per_duration_list), '.2f'))
-    total_per_walking_distance = float(format(sum(per_walking_distance_list)/len(per_walking_distance_list), '.2f'))
-    total_per_distance = float(format(sum(per_distance_list)/len(per_distance_list), '.2f'))
-
-    # print(detail)
-    around_market = get_around_place(traffic_location, radius=300, keywords='商场|超级市场', types='060100|060400',
-                                          key=key)
-    around_housing = get_around_place(traffic_location, radius=300, keywords='住宿|商务住宅',
-                                           types='100000|120000', key=key)
+        around_market = get_around_place(traffic_location, radius=300, keywords='商场|超级市场', types='060100|060400',
+                                              key=key)
+        around_housing = get_around_place(traffic_location, radius=300, keywords='住宿|商务住宅',
+                                               types='100000|120000', key=key)
 
 
-    target_info_dict['name'] = traffic_dict['name']
-    target_info_dict['location'] = traffic_dict['location']
-    target_info_dict['total_per_cost'] = total_per_cost
-    target_info_dict['total_per_duration'] = total_per_duration
-    target_info_dict['total_per_walking_distance'] = total_per_walking_distance
-    target_info_dict['total_per_distance'] = total_per_distance
-    target_info_dict['detail'] = detail
-    target_info_dict['around_market'] = around_market
-    target_info_dict['around_housing'] = around_housing
+        target_info_dict['name'] = traffic_dict['name']
+        target_info_dict['location'] = traffic_dict['location']
+        target_info_dict['total_per_cost'] = total_per_cost
+        target_info_dict['total_per_duration'] = total_per_duration
+        target_info_dict['total_per_walking_distance'] = total_per_walking_distance
+        target_info_dict['total_per_distance'] = total_per_distance
+        target_info_dict['detail'] = detail
+        target_info_dict['around_market'] = around_market
+        target_info_dict['around_housing'] = around_housing
 
-    print(target_info_dict)
-    return target_info_dict
+        return target_info_dict
+    except Exception as e:
+        print(e)
+        return
 
 def quick_sort(array, dict_key=None):
     '''
@@ -359,7 +354,7 @@ def get_circle(location1, location2, key=_KEY1):
     :return: ([圆心坐标], [半径])
     '''
     if location1 and location2:
-        distance = get_distance(location1, location2)
+        distance = get_distance(location1, location2, key=key)
         circle_radius = int(distance / 2) + 500
         center_location = get_center_point(location1, location2)
         return (center_location, circle_radius)
@@ -367,15 +362,15 @@ def get_circle(location1, location2, key=_KEY1):
         return
 
 def main():
-    key = _KEY1
-    address = '广州市天河区棠下二社涌边一横巷69天辉商业大厦'
-    city = '广州'
-    lo1 = get_location(address, city, key=key)
+    # key = _KEY1
+    # address = '广州市天河区棠下二社涌边一横巷69天辉商业大厦'
+    # city = '广州'
+    # lo1 = get_location(address, city, key=key)
     # get_regeo(lo1, key=key)
 
-    address = '广州市黄埔大道西120号高志大厦'
-    city = '广州'
-    lo2 = get_location(address, city, key=key)
+    # address = '广州市黄埔大道西120号高志大厦'
+    # city = '广州'
+    # lo2 = get_location(address, city, key=key)
     # get_regeo(lo2, key=key)
 
     # distance = get_distance(lo1, lo2)
@@ -384,8 +379,7 @@ def main():
     # print(circle_radius)
     # center_location = get_center_point(lo1, lo2)
 
-    t = get_circle(lo1, lo2)
-    print(t)
+    # t = get_circle(lo1, lo2)
 
 
     # tl = get_around_place(center_location, circle_radius, key=key)
@@ -405,12 +399,12 @@ def main():
     #     print(s)
 
 
-    # d = get_transit_direction('113.357903,23.124016', lo2, key=key)
+    # d = get_transit_direction('113.357903,23.124016', '113.377014,23.125239')
     # print(d)
 
-
     test_traffic_dict = {'name': '员村山顶(东行)(公交站)', 'location': '113.357903,23.124016'}
-    aggregate_target_info(_KEY1, lo1, lo2, **test_traffic_dict)
+    a = aggregate_target_info(_KEY1, '113.339759,23.125753', '113.377014,23.125239', **test_traffic_dict)
+    print(a)
 
     # around_market_list = get_around_place('113.357903,23.124016', radius=300, keywords='商场|超级市场', types='060100|060400', key=key)
     # for a in around_market_list:
@@ -421,22 +415,9 @@ def main():
     #     print(a)
 
 if __name__ == '__main__':
-    # main()
+    main()
     # print(float('2.0'))
     # TODO:公交的班车间隔时间，地点的周边设施范围800m,公寓、超市，站点的公交
     # t = get_location('拉拉阿拉', '广州')
     # print(t)
     # get_regeo('113.339759,23.125753')
-    l = [{'hhh': 'abc'}]
-    ll = json.dumps(l)
-    print(ll)
-    print(type(ll))
-
-    s = '[{"hhh": "abc"}]'
-    ss = json.loads(s)
-    print(ss)
-
-    f = 1.5684
-    ff = float(format(f, '.2f'))
-    print(type(ff))
-    print(ff)

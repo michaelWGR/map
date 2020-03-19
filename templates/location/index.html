@@ -1,6 +1,27 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block mainNavbar %}
+<ul class="flex-column mr-auto">
+    <li class="nav-item active">
+        <a class="nav-link active" href="{% url 'location:index' %}">Home <span class="sr-only">(current)</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'location:db_data' %}">Database</a>
+    </li>
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#MenuDropdown" data-toggle="collapse" aria-controls="MenuDropdown" aria-expanded="false">Examples &amp; Pages</a>
+        <ul id="MenuDropdown" class="sub-navbar collapse flex-column">
+            <li class="nav-item"><a class="nav-link" href="examples.html">Style Examples</a></li>
+            <li class="nav-item"><a class="nav-link" href="three-column.html">Three Column</a></li>
+            <li class="nav-item"><a class="nav-link" href="one-column.html">One column / no sidebar</a></li>
+            <li class="nav-item"><a class="nav-link"  href="text.html">Text / left sidebar</a></li>
+        </ul>
+    </li>
+</ul>
+{% endblock %}
+
 {% block main %}
 <div class="row">
 
@@ -114,9 +135,4 @@
 
 {% block bodyjs %}
 <script src="{% static 'location/js/index.js' %}"></script>
-<script>
-$(function () {
-    $("#address").autoClearButtonInput("create");
-})
-</script>
 {% endblock %}

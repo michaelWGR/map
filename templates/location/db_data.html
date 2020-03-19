@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block mainNavbar %}
+<ul class="flex-column mr-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'location:index' %}">Home <span class="sr-only">(current)</span></a>
+    </li>
+    <li class="nav-item active">
+        <a class="nav-link active" href="{% url 'location:db_data' %}">Database</a>
+    </li>
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#MenuDropdown" data-toggle="collapse" aria-controls="MenuDropdown" aria-expanded="false">Examples &amp; Pages</a>
+        <ul id="MenuDropdown" class="sub-navbar collapse flex-column">
+            <li class="nav-item"><a class="nav-link" href="examples.html">Style Examples</a></li>
+            <li class="nav-item"><a class="nav-link" href="three-column.html">Three Column</a></li>
+            <li class="nav-item"><a class="nav-link" href="one-column.html">One column / no sidebar</a></li>
+            <li class="nav-item"><a class="nav-link"  href="text.html">Text / left sidebar</a></li>
+        </ul>
+    </li>
+</ul>
+{% endblock %}
+
+{% block main %}
+<div class="row">
+    <article class="col-md-11">
+        <form class="form-inline" role="form">
+            <div class="form-group">
+                <label for="circle_id">circle_id：</label>
+                <input id="circle_id" type="number" placeholder="请输入id">
+            </div>
+            &nbsp;&nbsp;
+            <div class="form-group">
+                <label for="db_table_name">数据库表名：</label>
+                <select id="db_table_name">
+                    <option value="location_circle">location_circle</option>
+                    <option value="location_traffic_info">location_traffic_info</option>
+                    <option value="location_transit_detail">location_transit_detail</option>
+                </select>
+            </div>
+            &nbsp;&nbsp;
+            <input class="btn btn-primary btn-sm" id="delete_data" type="button" value="删除数据">
+        </form>
+        <p><span id="delete_count"></span></p>
+        <p><span id="delete_msg"></span></p>
+    </article>
+</div>
+{% endblock %}
+
+{% block bodyjs %}
+    <script src="{% static 'location/js/db_data.js' %}"></script>
+{% endblock %}
