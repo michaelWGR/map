@@ -1,9 +1,8 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.core import serializers
+from django.core.paginator import Paginator
 from django.http import JsonResponse
-from django.forms.models import model_to_dict
 from .models import Keymsg, Traffic_info, Circle, Transit_detail
 from .best_location import *
 import json
@@ -66,6 +65,8 @@ def search_transit_direction(request):
             key = request.POST.get('key')
             order_name = request.POST.get('order_name')
             order_type = request.POST.get('order_type')
+            page_num = int(request.POST.get('page_num')) if request.POST.get('page_num') != "" else 1
+            page_size = int(request.POST.get('page_size')) if request.POST.get('page_size') != "" else 10
 
             circle_tuple = get_circle(location1=location1, location2=location2, key=key)
             if circle_tuple:
@@ -112,28 +113,39 @@ def search_transit_direction(request):
 
 
                     order_method = order_type+order_name
-                    transit_detail = Transit_detail.objects.filter(circle=circle)\
+                    transit_detail_queryset = Transit_detail.objects.filter(circle=circle)\
                         .values('traffic_info_id', 'traffic_info__name', 'total_per_cost', 'total_per_duration', 'total_per_walking_distance', 'total_per_distance').order_by(order_method)
-                    # print(transit_detail.__dict__)
-                    transit_detail_list = []
-                    for i in transit_detail:
-                        transit_detail_list.append(i)
-                    context['code'] = 0
-                    context['transit_detail'] = transit_detail_list
 
+                    p = Paginator(transit_detail_queryset, page_size)
+                    current_page = p.page(page_num)
+
+                    transit_detail_list = []
+                    for i in current_page.object_list:
+                        transit_detail_list.append(i)
+
+                    context = {
+                        'code': 0,
+                        'transit_detail': transit_detail_list,
+                        'has_previous': current_page.has_previous(),
+                        'has_next': current_page.has_next(),
+                        'num_pages': p.num_pages
+                    }
                 except Exception as e:
                     print('inner' + str(e))
-
+                    context = {
+                        'code': 1,
+                        'error': str(e)
+                    }
         else:
             context = {
                 'code': 1,
                 'error': 'method is wrong!'
             }
-        return JsonResponse(context)
+        # return JsonResponse(context)
     except Exception as e:
         context = {
             'code': 1,
-            'error': 'I dont know what happen.'
+            'error': str(e)
         }
         print(e)
-        return JsonResponse(context)
+    return JsonResponse(context)
