@@ -23,7 +23,6 @@
 {% endblock %}
 
 {% block main %}
-<div class="row">
     <article class="col-md-11">
         <form class="form-inline" role="form">
             <div class="form-group">
@@ -34,18 +33,113 @@
             <div class="form-group">
                 <label for="db_table_name">数据库表名：</label>
                 <select id="db_table_name">
+                    <option value=""></option>
                     <option value="location_circle">location_circle</option>
                     <option value="location_traffic_info">location_traffic_info</option>
                     <option value="location_transit_detail">location_transit_detail</option>
                 </select>
             </div>
             &nbsp;&nbsp;
-            <input class="btn btn-primary btn-sm" id="delete_data" type="button" value="删除数据">
+            <input class="btn btn-primary btn-sm" id="delete_data_button" type="button" value="删除数据">
         </form>
-        <p><span id="delete_count"></span></p>
-        <p><span id="delete_msg"></span></p>
+        <br><br>
+
+        <div class="col-12">
+            <ul class="nav nav-pills" id="db_tab">
+                <li><a href="#circle" data-toggle="tab" title="Circle">Circle({{ circle_list.count }})</a></li>
+                <li><a href="#traffic_info" data-toggle="tab" title="Traffic_info">Traffic_info({{ traffic_info_list.count }})</a></li>
+                <li><a href="#transit_detail" data-toggle="tab" title="Transit_detail">Transit_detail({{ transit_detail_list.count }})</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="circle">
+                    {% if circle_list %}
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>center_location</th>
+                                    <th>radius</th>
+                                    <th>created_time</th>
+                                    <th>modified_time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for circle in circle_list %}
+                                    <tr>
+                                        <td>{{ circle.id }}</td>
+                                        <td>{{ circle.center_location }}</td>
+                                        <td>{{ circle.radius }}</td>
+                                        <td>{{ circle.created_time }}</td>
+                                        <td>{{ circle.modified_time }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="traffic_info">
+                    {% if traffic_info_list %}
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>name</th>
+                                    <th>location</th>
+                                    <th>circle_id</th>
+                                    <th>created_time</th>
+                                    <th>modified_time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for traffic_info in traffic_info_list %}
+                                    <tr>
+                                        <td>{{ traffic_info.id }}</td>
+                                        <td>{{ traffic_info.name }}</td>
+                                        <td>{{ traffic_info.location }}</td>
+                                        <td>{{ traffic_info.circle_id }}</td>
+                                        <td>{{ traffic_info.created_time }}</td>
+                                        <td>{{ traffic_info.modified_time }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="transit_detail">
+                    {% if transit_detail_list %}
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>total_per_cost</th>
+                                    <th>total_per_duration</th>
+                                    <th>total_per_walking_distance</th>
+                                    <th>total_per_distance</th>
+                                    <th>circle_id</th>
+                                    <th>created_time</th>
+                                    <th>modified_time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transit_detail in transit_detail_list %}
+                                    <tr>
+                                        <td>{{ transit_detail.id }}</td>
+                                        <td>{{ transit_detail.total_per_cost }}</td>
+                                        <td>{{ transit_detail.total_per_duration }}</td>
+                                        <td>{{ transit_detail.total_per_walking_distance }}</td>
+                                        <td>{{ transit_detail.total_per_distance }}</td>
+                                        <td>{{ transit_detail.circle_id }}</td>
+                                        <td>{{ transit_detail.created_time }}</td>
+                                        <td>{{ transit_detail.modified_time }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </article>
-</div>
 {% endblock %}
 
 {% block bodyjs %}

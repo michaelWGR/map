@@ -19,7 +19,7 @@ class Circle(models.Model):
     created_time = models.DateTimeField(default=timezone.now(), verbose_name='创建时间')
 
     def __str__(self):
-        return self.id
+        return self.center_location
 
 class Traffic_info(models.Model):
     name = models.CharField(max_length=50, verbose_name='交通名称')

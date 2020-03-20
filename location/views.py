@@ -27,9 +27,9 @@ def detail(request, traffic_info_id):
     return render(request, 'location/detail.html', context)
 
 def db_data(request):
-    circle_list = Circle.objects.all().order_by('id')
-    traffic_info_list = Traffic_info.objects.all().order_by('id')
-    transit_detail_list= Transit_detail.objects.all().order_by('id')
+    circle_list = Circle.objects.all().order_by('-modified_time')
+    traffic_info_list = Traffic_info.objects.all().order_by('-modified_time')
+    transit_detail_list= Transit_detail.objects.all().order_by('-modified_time')
     context = {
         'circle_list': circle_list,
         'traffic_info_list': traffic_info_list,
