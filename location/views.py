@@ -1,12 +1,11 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from .models import Keymsg, Traffic_info, Circle, Transit_detail
-from .best_location import *
+from location.models import Keymsg, Traffic_info, Circle, Transit_detail
+from location.best_location import *
 import json
-
 
 
 def index(request):
@@ -15,6 +14,7 @@ def index(request):
         'key_list': key_list,
     }
     return render(request, 'location/index.html', context)
+
 
 def detail(request, traffic_info_id):
     transit_detail_by_id = get_object_or_404(Transit_detail, traffic_info_id=traffic_info_id)
@@ -26,16 +26,18 @@ def detail(request, traffic_info_id):
     }
     return render(request, 'location/detail.html', context)
 
+
 def db_data(request):
     circle_list = Circle.objects.all().order_by('-modified_time')
     traffic_info_list = Traffic_info.objects.all().order_by('-modified_time')
-    transit_detail_list= Transit_detail.objects.all().order_by('-modified_time')
+    transit_detail_list = Transit_detail.objects.all().order_by('-modified_time')
     context = {
         'circle_list': circle_list,
         'traffic_info_list': traffic_info_list,
         'transit_detail_list': transit_detail_list
     }
     return render(request, 'location/db_data.html', context)
+
 
 @csrf_exempt
 def search_location(request):
@@ -64,6 +66,7 @@ def search_location(request):
         }
     return JsonResponse(context)
 
+
 @csrf_exempt
 def search_transit_direction(request):
     context = {}
@@ -82,7 +85,7 @@ def search_transit_direction(request):
                 center_location = circle_tuple[0]
                 radius = circle_tuple[1]
 
-                #查询并插入circle数据
+                # 查询并插入circle数据
                 circle_queryset = Circle.objects.filter(center_location=center_location, radius=radius)
                 if not circle_queryset:
                     c = Circle(center_location=center_location, radius=radius)
@@ -123,7 +126,8 @@ def search_transit_direction(request):
                             td = Transit_detail(total_per_cost=total_per_cost, total_per_duration=total_per_duration,
                                                 total_per_walking_distance=total_per_walking_distance,
                                                 total_per_distance=total_per_distance,
-                                                detail=detail, around_market=around_market, around_housing=around_housing,
+                                                detail=detail, around_market=around_market,
+                                                around_housing=around_housing,
                                                 traffic_info=traffic_info_object, circle=circle)
                             td.save()
                             print(traffic_info_object.name)
@@ -135,9 +139,10 @@ def search_transit_direction(request):
                             return JsonResponse(context)
 
                 # 分页展示数据
-                order_method = order_type+order_name
-                transit_detail_queryset = Transit_detail.objects.filter(circle=circle)\
-                    .values('traffic_info_id', 'traffic_info__name', 'total_per_cost', 'total_per_duration', 'total_per_walking_distance', 'total_per_distance').order_by(order_method)
+                order_method = order_type + order_name
+                transit_detail_queryset = Transit_detail.objects.filter(circle=circle) \
+                    .values('traffic_info_id', 'traffic_info__name', 'total_per_cost', 'total_per_duration',
+                            'total_per_walking_distance', 'total_per_distance').order_by(order_method)
                 p = Paginator(transit_detail_queryset, page_size)
                 current_page = p.page(page_num)
 
@@ -171,6 +176,7 @@ def search_transit_direction(request):
         }
         print(e)
     return JsonResponse(context)
+
 
 @csrf_exempt
 def delete_data(request):
@@ -211,3 +217,32 @@ def delete_data(request):
             'error': 'method is wrong!'
         }
         return JsonResponse(context)
+
+@csrf_exempt
+def init_key(request):
+    '''
+    初始化key数据
+    '''
+    key_list = ['619ed12d1faba843409f7e4733b69374', 'a7a748325a547459c5611ea4449e01ba',
+                '36485fd9cf9d4865138d746840a6dba5', '29e36d6ceb83210d60c240b20ff4491e']
+    try:
+        for k in key_list:
+            key_msg = Keymsg(key=k, type=0, is_deleted=0)
+            key_msg.save()
+        context = {
+            'code': 0,
+            'error': 'init key successfully'
+        }
+    except:
+        context = {
+            'code': 1,
+            'error': 'init key failed'
+        }
+    return JsonResponse(context)
+
+
+if __name__ == '__main__':
+    import os
+
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'map.settings'
+    init_key()

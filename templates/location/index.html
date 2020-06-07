@@ -46,9 +46,14 @@
             <div class="form-group">
                 <label for="key">请求秘钥：</label>
                 <select id="key" name="key">
-                {% for k in key_list %}
-                    <option value="{{ k.key }}">{{ k.id }}&nbsp;&nbsp;</option>
-                {% endfor %}
+                    <option value=""></option>
+                {% if key_list %}
+                    {% for k in key_list %}
+                        <option value="{{ k.key }}">{{ k.id }}&nbsp;&nbsp;</option>
+                    {% endfor %}
+                {% else %}
+                    <option value="init key">init key</option>
+                {% endif %}
                 </select>
             </div>
             &nbsp;&nbsp;&nbsp;

@@ -415,9 +415,13 @@ def main():
     #     print(a)
 
 if __name__ == '__main__':
-    main()
+    # main()
     # print(float('2.0'))
     # TODO:公交的班车间隔时间，地点的周边设施范围800m,公寓、超市，站点的公交
-    # t = get_location('拉拉阿拉', '广州')
-    # print(t)
-    # get_regeo('113.339759,23.125753')
+    t = get_location('广州潭村地铁站', '广州')
+    t2 = get_location('嘉昱中心', '广州')
+    print(t)
+    rg = get_regeo(t)
+    print(rg)
+    dt = get_distance('113.321230,23.105685', '113.321230,23.105685')
+    print(dt)

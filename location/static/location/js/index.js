@@ -150,4 +150,14 @@ $(function () {
             $(this).css("background-color", "#ffffff");
         }
     );
+    // 初始化插入key数据
+    $("#key").change(function () {
+        if ($(this).val() === "init key") {
+            $.get("init_key", function (data) {
+                alert(data.error);
+            });
+            window.location.reload();
+        };
+    });
+    //
 });
